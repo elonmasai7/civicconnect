@@ -1,9 +1,12 @@
 # CivicConnect - Empowering Civic Engagement
+![IMG_20250806_010229](https://github.com/user-attachments/assets/1dbc7c99-8cd9-4d87-a93c-54224ca6a1d6)
 
 
 CivicConnect is a comprehensive platform designed to empower citizens to engage with their government, understand policies, and make their voices heard. Founded by Elon Masai, this project bridges the gap between citizens and their representatives through intuitive technology.
 
 ## Features
+![IMG_20250806_010251](https://github.com/user-attachments/assets/4efe0816-c502-4c4c-9aa2-3b5b99c042a6)
+
 
 ### 🏛️ Representative Finder
 - Geolocation-based search for elected officials
@@ -14,6 +17,8 @@ CivicConnect is a comprehensive platform designed to empower citizens to engage 
 - Multi-level complexity explanations (Basic, Intermediate, Advanced)
 - Visual impact analysis of proposed legislation
 - Policy simulation tools
+- ![Screenshot_2025-08-06-00-39-59-12](https://github.com/user-attachments/assets/af328b63-b93c-4286-b8f2-2de933f92310)
+
 
 ### ✊ Action Center
 - Contact representatives with pre-written templates
@@ -24,6 +29,8 @@ CivicConnect is a comprehensive platform designed to empower citizens to engage 
 - Visual analytics of civic participation
 - Achievement badges and progress tracking
 - Personalized engagement recommendations
+- ![Screenshot_2025-08-06-00-40-09-47](https://github.com/user-attachments/assets/efa7e81d-8142-4de0-a07c-083402e2698e)
+
 
 ## Technologies
 
