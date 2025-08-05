@@ -1,0 +1,1571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CivicConnect - Engage with Your Government</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --secondary: #1e40af;
+            --accent: #3b82f6;
+            --light: #f0f9ff;
+            --dark: #1e293b;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --gray: #64748b;
+            --light-gray: #e2e8f0;
+            --radius: 12px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f8fafc;
+            color: var(--dark);
+            line-height: 1.6;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            min-height: 100vh;
+        }
+        
+        .app-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 20px 0;
+            border-radius: var(--radius);
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo i {
+            font-size: 2.5rem;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .logo h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+        }
+        
+        .logo span {
+            font-weight: 300;
+        }
+        
+        .user-actions {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border-radius: 50px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background-color: white;
+            color: var(--primary);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 2px solid white;
+            color: white;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+        
+        .tabs {
+            display: flex;
+            background-color: white;
+            border-radius: var(--radius);
+            overflow: hidden;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 600;
+            border-bottom: 3px solid transparent;
+        }
+        
+        .tab.active {
+            border-bottom: 3px solid var(--primary);
+            color: var(--primary);
+            background-color: var(--light);
+        }
+        
+        .tab:hover:not(.active) {
+            background-color: var(--light-gray);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        .card-header h2 {
+            font-size: 1.5rem;
+            color: var(--secondary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .search-container {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .search-container input {
+            flex: 1;
+            padding: 15px;
+            border: 1px solid var(--light-gray);
+            border-radius: var(--radius);
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        .search-container input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+        
+        .representatives-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        
+        .rep-card {
+            background: white;
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            position: relative;
+        }
+        
+        .rep-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .rep-header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .rep-avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background-color: var(--light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+        
+        .rep-info {
+            flex: 1;
+        }
+        
+        .rep-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .rep-role {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        .rep-body {
+            padding: 20px;
+        }
+        
+        .rep-contact {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--gray);
+        }
+        
+        .contact-item i {
+            color: var(--primary);
+            min-width: 20px;
+        }
+        
+        .rep-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .action-btn {
+            flex: 1;
+            padding: 10px;
+            border-radius: 8px;
+            background: var(--light);
+            color: var(--primary);
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: var(--transition);
+        }
+        
+        .action-btn:hover {
+            background: var(--accent);
+            color: white;
+        }
+        
+        .policy-card {
+            background: white;
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            margin-bottom: 25px;
+        }
+        
+        .policy-header {
+            background: linear-gradient(135deg, #0ea5e9, #0284c7);
+            color: white;
+            padding: 20px;
+        }
+        
+        .policy-title {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+        }
+        
+        .policy-meta {
+            display: flex;
+            gap: 20px;
+            font-size: 0.9rem;
+            opacity: 0.9;
+            flex-wrap: wrap;
+        }
+        
+        .policy-body {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+        
+        .policy-section {
+            margin-bottom: 15px;
+        }
+        
+        .policy-section h3 {
+            color: var(--secondary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .complexity-selector {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .complexity-btn {
+            padding: 12px 20px;
+            background: var(--light);
+            border: 2px solid var(--light-gray);
+            border-radius: var(--radius);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .complexity-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .complexity-btn:hover:not(.active) {
+            background: #dbeafe;
+        }
+        
+        .policy-content {
+            line-height: 1.8;
+        }
+        
+        .policy-content ul {
+            padding-left: 20px;
+            margin: 15px 0;
+        }
+        
+        .policy-content li {
+            margin-bottom: 10px;
+        }
+        
+        .impact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .impact-card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .impact-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .impact-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+        
+        .impact-card h4 {
+            margin-bottom: 10px;
+            color: var(--secondary);
+        }
+        
+        .action-tools {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+        
+        .tool-card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            transition: var(--transition);
+            height: 100%;
+        }
+        
+        .tool-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .tool-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: var(--light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: var(--primary);
+        }
+        
+        .tool-card h3 {
+            color: var(--secondary);
+        }
+        
+        .tool-card p {
+            color: var(--gray);
+            flex-grow: 1;
+        }
+        
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .stat-label {
+            color: var(--gray);
+            font-size: 1rem;
+        }
+        
+        footer {
+            margin-top: 50px;
+            padding: 30px 0;
+            border-top: 1px solid var(--light-gray);
+            color: var(--gray);
+            text-align: center;
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            flex-wrap: wrap;
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: 25px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .footer-links a {
+            color: var(--gray);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: var(--radius);
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            position: relative;
+            animation: modalFadeIn 0.3s ease;
+        }
+        
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray);
+        }
+        
+        .modal-header {
+            margin-bottom: 20px;
+        }
+        
+        .modal-body {
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .form-group input, 
+        .form-group textarea, 
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--light-gray);
+            border-radius: var(--radius);
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus, 
+        .form-group textarea:focus, 
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+        
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: var(--radius);
+            background: var(--success);
+            color: white;
+            box-shadow: var(--shadow);
+            display: none;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(100px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .representatives-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .footer-links {
+                justify-content: center;
+            }
+            
+            .search-container {
+                flex-direction: column;
+            }
+            
+            .action-tools {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-democrat"></i>
+                    <div>
+                        <h1>Civic<span>Connect</span></h1>
+                        <p>Your voice in government matters</p>
+                    </div>
+                </div>
+                <div class="user-actions">
+                    <button class="btn btn-outline" id="signin-btn">
+                        <i class="fas fa-user"></i> Sign In
+                    </button>
+                    <button class="btn btn-primary" id="notifications-btn">
+                        <i class="fas fa-bell"></i> Notifications
+                    </button>
+                </div>
+            </div>
+        </header>
+        
+        <div class="tabs">
+            <div class="tab active" data-tab="reps">Find Representatives</div>
+            <div class="tab" data-tab="policy">Policy Explorer</div>
+            <div class="tab" data-tab="action">Take Action</div>
+            <div class="tab" data-tab="stats">Engagement Stats</div>
+        </div>
+        
+        <!-- Representatives Tab -->
+        <div class="tab-content active" id="reps-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-search-location"></i> Find Your Representatives</h2>
+                </div>
+                <div class="search-container">
+                    <input type="text" id="address-input" placeholder="Enter your address (e.g. 123 Main St, Anytown, ST)" value="123 Congress Ave, Austin, TX">
+                    <button class="btn btn-primary" id="search-btn">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                </div>
+                
+                <div class="representatives-grid" id="reps-container">
+                    <!-- Representatives will be loaded here -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- Policy Explorer Tab -->
+        <div class="tab-content" id="policy-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-file-alt"></i> Policy Explorer</h2>
+                    <div>
+                        <select id="policy-select">
+                            <option value="healthcare">Healthcare Reform Act</option>
+                            <option value="education">Education Equality Act</option>
+                            <option value="climate">Climate Action Plan</option>
+                            <option value="infrastructure">National Infrastructure Bill</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="policy-card">
+                    <div class="policy-header">
+                        <h2 class="policy-title" id="policy-title">Healthcare Reform Act (H.R. 2378)</h2>
+                        <div class="policy-meta">
+                            <span><i class="fas fa-calendar"></i> Introduced: <span id="policy-date">March 15, 2023</span></span>
+                            <span><i class="fas fa-user"></i> Sponsor: <span id="policy-sponsor">Rep. Jane Smith</span></span>
+                            <span><i class="fas fa-balance-scale"></i> Status: <span id="policy-status">In Committee</span></span>
+                        </div>
+                    </div>
+                    
+                    <div class="policy-body">
+                        <div class="complexity-selector">
+                            <button class="complexity-btn active" data-level="basic">Basic Summary</button>
+                            <button class="complexity-btn" data-level="intermediate">Intermediate</button>
+                            <button class="complexity-btn" data-level="advanced">Advanced Details</button>
+                        </div>
+                        
+                        <div class="policy-section">
+                            <h3><i class="fas fa-info-circle"></i> Overview</h3>
+                            <div class="policy-content" id="overview-content">
+                                This bill aims to make healthcare more affordable for everyone. It will lower costs for families and improve access to doctors.
+                            </div>
+                        </div>
+                        
+                        <div class="policy-section">
+                            <h3><i class="fas fa-check-circle"></i> Key Provisions</h3>
+                            <div class="policy-content" id="provisions-content">
+                                <ul>
+                                    <li>Caps prescription drug costs at $35/month</li>
+                                    <li>Expands free preventative care services</li>
+                                    <li>Provides subsidies to help lower-income families afford insurance</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="policy-section">
+                            <h3><i class="fas fa-chart-line"></i> Projected Impact</h3>
+                            <div class="impact-grid">
+                                <div class="impact-card">
+                                    <div class="impact-icon">
+                                        <i class="fas fa-hand-holding-usd"></i>
+                                    </div>
+                                    <h4>Cost Savings</h4>
+                                    <p>Average family saves $1,200/year on healthcare</p>
+                                </div>
+                                <div class="impact-card">
+                                    <div class="impact-icon">
+                                        <i class="fas fa-user-md"></i>
+                                    </div>
+                                    <h4>Coverage Expansion</h4>
+                                    <p>4 million more Americans would gain coverage</p>
+                                </div>
+                                <div class="impact-card">
+                                    <div class="impact-icon">
+                                        <i class="fas fa-pills"></i>
+                                    </div>
+                                    <h4>Drug Affordability</h4>
+                                    <p>90% of seniors would see lower prescription costs</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button class="btn btn-primary" id="simulate-policy-btn">
+                            <i class="fas fa-chart-bar"></i> Simulate Policy Impact
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Take Action Tab -->
+        <div class="tab-content" id="action-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-megaphone"></i> Make Your Voice Heard</h2>
+                </div>
+                
+                <div class="action-tools">
+                    <div class="tool-card">
+                        <div class="tool-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <h3>Contact Representatives</h3>
+                        <p>Send a message directly to your elected officials about issues that matter to you.</p>
+                        <button class="btn btn-primary" id="contact-rep-btn">Send Message</button>
+                    </div>
+                    
+                    <div class="tool-card">
+                        <div class="tool-icon">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <h3>Meeting Scheduler</h3>
+                        <p>Request an in-person or virtual meeting with your representatives.</p>
+                        <button class="btn btn-primary" id="schedule-meeting-btn">Schedule Meeting</button>
+                    </div>
+                    
+                    <div class="tool-card">
+                        <div class="tool-icon">
+                            <i class="fas fa-bullhorn"></i>
+                        </div>
+                        <h3>Community Action</h3>
+                        <p>Join or organize local events and petitions around important issues.</p>
+                        <button class="btn btn-primary" id="community-action-btn">Get Involved</button>
+                    </div>
+                    
+                    <div class="tool-card">
+                        <div class="tool-icon">
+                            <i class="fas fa-vote-yea"></i>
+                        </div>
+                        <h3>Voting Tools</h3>
+                        <p>Register to vote, find polling locations, and get election reminders.</p>
+                        <button class="btn btn-primary" id="voting-tools-btn">Voting Center</button>
+                    </div>
+                </div>
+                
+                <div class="card-header" style="margin-top: 30px;">
+                    <h2><i class="fas fa-edit"></i> Send a Message to Your Representative</h2>
+                </div>
+                
+                <div class="card">
+                    <div class="search-container">
+                        <select id="rep-select">
+                            <option value="">Select a representative</option>
+                            <option value="sen1">Sen. John Davis</option>
+                            <option value="sen2">Sen. Maria Rodriguez</option>
+                            <option value="rep">Rep. Alex Johnson</option>
+                            <option value="gov">Gov. Sarah Williams</option>
+                        </select>
+                    </div>
+                    
+                    <div style="margin-top: 20px;">
+                        <input type="text" id="message-subject" placeholder="Subject" style="width: 100%; padding: 15px; margin-bottom: 15px; border-radius: var(--radius); border: 1px solid var(--light-gray);">
+                        <textarea id="message-content" placeholder="Your message..." style="width: 100%; height: 200px; padding: 15px; border-radius: var(--radius); border: 1px solid var(--light-gray);"></textarea>
+                        <button class="btn btn-primary" id="send-message-btn" style="margin-top: 15px; width: 100%;">
+                            <i class="fas fa-paper-plane"></i> Send Message
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Engagement Stats Tab -->
+        <div class="tab-content" id="stats-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-chart-bar"></i> Engagement Statistics</h2>
+                </div>
+                
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <div class="stat-value">1,250</div>
+                        <div class="stat-label">Messages Sent to Officials</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">87%</div>
+                        <div class="stat-label">Policy Understanding Increase</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">42</div>
+                        <div class="stat-label">Meetings Scheduled</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">92%</div>
+                        <div class="stat-label">User Satisfaction</div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 30px;">
+                    <canvas id="engagement-chart" height="300"></canvas>
+                </div>
+                
+                <div class="card-header" style="margin-top: 30px;">
+                    <h2><i class="fas fa-trophy"></i> Your Engagement Progress</h2>
+                </div>
+                
+                <div class="card" style="padding: 30px;">
+                    <div style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
+                        <div style="flex: 1; min-width: 200px;">
+                            <div style="background: var(--light); border-radius: var(--radius); padding: 20px; text-align: center;">
+                                <div class="stat-value">65%</div>
+                                <div class="stat-label">Civic Engagement Score</div>
+                            </div>
+                        </div>
+                        <div style="flex: 2; min-width: 300px;">
+                            <h3 style="margin-bottom: 15px; color: var(--secondary);">Next Badges to Earn</h3>
+                            <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                                <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: var(--radius); padding: 15px; display: flex; align-items: center; gap: 10px;">
+                                    <i class="fas fa-comments" style="color: var(--success); font-size: 1.5rem;"></i>
+                                    <div>
+                                        <div style="font-weight: 600;">Communicator</div>
+                                        <div style="font-size: 0.9rem; color: var(--gray);">Send 5 messages</div>
+                                    </div>
+                                </div>
+                                <div style="background: #fffbeb; border: 1px solid #fde68a; border-radius: var(--radius); padding: 15px; display: flex; align-items: center; gap: 10px;">
+                                    <i class="fas fa-lightbulb" style="color: var(--warning); font-size: 1.5rem;"></i>
+                                    <div>
+                                        <div style="font-weight: 600;">Policy Expert</div>
+                                        <div style="font-size: 0.9rem; color: var(--gray);">Read 10 policy summaries</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <div class="footer-content">
+                <div>
+                    <p>&copy; 2023 CivicConnect. Empowering democratic participation.</p>
+                </div>
+                <div class="footer-links">
+                    <a href="#">About</a>
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Contact</a>
+                    <a href="#">FAQ</a>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+    <!-- Modals -->
+    <div class="modal" id="signin-modal">
+        <div class="modal-content">
+            <span class="close-modal" id="close-signin">&times;</span>
+            <div class="modal-header">
+                <h2><i class="fas fa-user"></i> Sign In to CivicConnect</h2>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" placeholder="you@example.com">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Enter your password">
+                </div>
+                <div style="margin-top: 20px; text-align: center;">
+                    <button class="btn btn-primary" style="width: 100%;" id="signin-submit">Sign In</button>
+                    <p style="margin-top: 15px; color: var(--gray);">Don't have an account? <a href="#" style="color: var(--primary);">Sign up</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal" id="contact-modal">
+        <div class="modal-content">
+            <span class="close-modal" id="close-contact">&times;</span>
+            <div class="modal-header">
+                <h2><i class="fas fa-envelope"></i> Contact Representative</h2>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="contact-rep">Select Representative</label>
+                    <select id="contact-rep">
+                        <option value="">Choose a representative</option>
+                        <option value="sen1">Sen. John Davis</option>
+                        <option value="sen2">Sen. Maria Rodriguez</option>
+                        <option value="rep">Rep. Alex Johnson</option>
+                        <option value="gov">Gov. Sarah Williams</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="contact-subject">Subject</label>
+                    <input type="text" id="contact-subject" placeholder="What is your message about?">
+                </div>
+                <div class="form-group">
+                    <label for="contact-message">Your Message</label>
+                    <textarea id="contact-message" rows="5" placeholder="Type your message here..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" id="cancel-contact">Cancel</button>
+                <button class="btn btn-primary" id="send-contact">Send Message</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal" id="schedule-modal">
+        <div class="modal-content">
+            <span class="close-modal" id="close-schedule">&times;</span>
+            <div class="modal-header">
+                <h2><i class="fas fa-calendar-check"></i> Schedule a Meeting</h2>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="meeting-rep">Select Representative</label>
+                    <select id="meeting-rep">
+                        <option value="">Choose a representative</option>
+                        <option value="sen1">Sen. John Davis</option>
+                        <option value="sen2">Sen. Maria Rodriguez</option>
+                        <option value="rep">Rep. Alex Johnson</option>
+                        <option value="gov">Gov. Sarah Williams</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="meeting-type">Meeting Type</label>
+                    <select id="meeting-type">
+                        <option value="">Select meeting type</option>
+                        <option value="virtual">Virtual Meeting</option>
+                        <option value="in-person">In-Person Meeting</option>
+                        <option value="phone">Phone Call</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="meeting-date">Preferred Date</label>
+                    <input type="date" id="meeting-date">
+                </div>
+                <div class="form-group">
+                    <label for="meeting-time">Preferred Time</label>
+                    <select id="meeting-time">
+                        <option value="">Select a time slot</option>
+                        <option value="morning">Morning (9am-12pm)</option>
+                        <option value="afternoon">Afternoon (1pm-4pm)</option>
+                        <option value="evening">Evening (5pm-7pm)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="meeting-topic">Meeting Topic</label>
+                    <input type="text" id="meeting-topic" placeholder="What would you like to discuss?">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" id="cancel-schedule">Cancel</button>
+                <button class="btn btn-primary" id="submit-schedule">Request Meeting</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i> <span id="notification-text">Action completed successfully!</span>
+    </div>
+
+    <script>
+        // Tab navigation
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Remove active class from all tabs and content
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                
+                // Add active class to clicked tab
+                tab.classList.add('active');
+                
+                // Show corresponding content
+                const tabId = tab.getAttribute('data-tab');
+                document.getElementById(`${tabId}-content`).classList.add('active');
+            });
+        });
+        
+        // Complexity level switcher
+        document.querySelectorAll('.complexity-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.complexity-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                const level = btn.getAttribute('data-level');
+                updatePolicyContent(level);
+            });
+        });
+        
+        function updatePolicyContent(level) {
+            const overview = document.getElementById('overview-content');
+            const provisions = document.getElementById('provisions-content');
+            
+            if (level === 'basic') {
+                overview.innerHTML = 'This bill aims to make healthcare more affordable for everyone. It will lower costs for families and improve access to doctors.';
+                provisions.innerHTML = `
+                    <ul>
+                        <li>Caps prescription drug costs at $35/month</li>
+                        <li>Expands free preventative care services</li>
+                        <li>Provides subsidies to help lower-income families afford insurance</li>
+                    </ul>
+                `;
+            } else if (level === 'intermediate') {
+                overview.innerHTML = 'The Healthcare Reform Act proposes significant changes to reduce out-of-pocket expenses for consumers while expanding coverage options. Key elements include price controls on essential medications and expanded subsidies for marketplace insurance plans.';
+                provisions.innerHTML = `
+                    <ul>
+                        <li>Monthly cap of $35 on essential prescription medications</li>
+                        <li>Expansion of ACA subsidies to households earning up to 600% of the federal poverty level</li>
+                        <li>Requires insurers to cover preventative services without cost-sharing</li>
+                        <li>Creation of a public option for health insurance in underserved areas</li>
+                    </ul>
+                `;
+            } else {
+                overview.innerHTML = 'H.R. 2378 introduces comprehensive reforms to the healthcare system focused on cost containment and expanded access. The bill amends Title XVIII of the Social Security Act to establish new pricing mechanisms for pharmaceuticals and expands eligibility criteria for premium tax credits under the Affordable Care Act.';
+                provisions.innerHTML = `
+                    <ul>
+                        <li>Section 101: Establishes a maximum out-of-pocket limit of $2,000/year for prescription drugs under Medicare Part D</li>
+                        <li>Section 203: Modifies the premium tax credit calculation to increase subsidies for households at 200-600% FPL</li>
+                        <li>Section 305: Mandates coverage of USPSTF-recommended preventative services without cost-sharing</li>
+                        <li>Section 401: Authorizes the creation of a federally-administered public health insurance option</li>
+                        <li>Section 502: Implements reference pricing for 250 high-cost prescription drugs</li>
+                    </ul>
+                `;
+            }
+        }
+        
+        // Representative data
+        const representatives = [
+            {
+                id: "sen1",
+                name: "Sen. John Davis",
+                role: "U.S. Senator",
+                party: "Democratic Party",
+                district: "Texas",
+                contact: {
+                    email: "john.davis@senate.gov",
+                    phone: "(202) 224-1234",
+                    website: "senatordavis.gov"
+                },
+                avatar: "JD",
+                nextEvent: "Town Hall - Oct 15, 7 PM"
+            },
+            {
+                id: "sen2",
+                name: "Sen. Maria Rodriguez",
+                role: "U.S. Senator",
+                party: "Republican Party",
+                district: "Texas",
+                contact: {
+                    email: "maria.rodriguez@senate.gov",
+                    phone: "(202) 224-5678",
+                    website: "senatorrodriguez.gov"
+                },
+                avatar: "MR",
+                nextEvent: "Office Hours - Oct 12, 10 AM"
+            },
+            {
+                id: "rep",
+                name: "Rep. Alex Johnson",
+                role: "U.S. Representative",
+                party: "Democratic Party",
+                district: "Texas 10th District",
+                contact: {
+                    email: "alex.johnson@house.gov",
+                    phone: "(202) 225-9012",
+                    website: "repjohnson.gov"
+                },
+                avatar: "AJ",
+                nextEvent: "Virtual Q&A - Oct 18, 6 PM"
+            },
+            {
+                id: "gov",
+                name: "Gov. Sarah Williams",
+                role: "Governor",
+                party: "Independent",
+                district: "State of Texas",
+                contact: {
+                    email: "governor.williams@texas.gov",
+                    phone: "(512) 463-2000",
+                    website: "governor.texas.gov"
+                },
+                avatar: "SW",
+                nextEvent: "Policy Announcement - Oct 20, 2 PM"
+            }
+        ];
+        
+        // Render representatives
+        function renderRepresentatives() {
+            const container = document.getElementById('reps-container');
+            container.innerHTML = '';
+            
+            representatives.forEach(rep => {
+                const repCard = document.createElement('div');
+                repCard.className = 'rep-card';
+                repCard.innerHTML = `
+                    <div class="rep-header">
+                        <div class="rep-avatar">${rep.avatar}</div>
+                        <div class="rep-info">
+                            <div class="rep-name">${rep.name}</div>
+                            <div class="rep-role">${rep.role} | ${rep.party}</div>
+                        </div>
+                    </div>
+                    <div class="rep-body">
+                        <div class="rep-contact">
+                            <div class="contact-item">
+                                <i class="fas fa-envelope"></i>
+                                <span>${rep.contact.email}</span>
+                            </div>
+                            <div class="contact-item">
+                                <i class="fas fa-phone"></i>
+                                <span>${rep.contact.phone}</span>
+                            </div>
+                            <div class="contact-item">
+                                <i class="fas fa-globe"></i>
+                                <span>${rep.contact.website}</span>
+                            </div>
+                            <div class="contact-item">
+                                <i class="fas fa-calendar"></i>
+                                <span>${rep.nextEvent}</span>
+                            </div>
+                        </div>
+                        <div class="rep-actions">
+                            <button class="action-btn" data-rep="${rep.id}" data-action="message">
+                                <i class="fas fa-envelope"></i> Message
+                            </button>
+                            <button class="action-btn" data-rep="${rep.id}" data-action="schedule">
+                                <i class="fas fa-calendar"></i> Schedule
+                            </button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(repCard);
+            });
+            
+            // Add event listeners to action buttons
+            document.querySelectorAll('.action-btn[data-action="message"]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const repId = btn.getAttribute('data-rep');
+                    const rep = representatives.find(r => r.id === repId);
+                    if (rep) {
+                        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                        document.querySelector('.tab[data-tab="action"]').classList.add('active');
+                        document.getElementById('action-content').classList.add('active');
+                        
+                        document.getElementById('rep-select').value = repId;
+                        document.getElementById('message-subject').value = `Message for ${rep.name}`;
+                        document.getElementById('message-content').focus();
+                        
+                        showNotification(`Ready to message ${rep.name}`);
+                    }
+                });
+            });
+            
+            document.querySelectorAll('.action-btn[data-action="schedule"]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const repId = btn.getAttribute('data-rep');
+                    const rep = representatives.find(r => r.id === repId);
+                    if (rep) {
+                        openScheduleModal(rep);
+                    }
+                });
+            });
+        }
+        
+        // Policy data
+        const policies = {
+            healthcare: {
+                title: "Healthcare Reform Act (H.R. 2378)",
+                date: "March 15, 2023",
+                sponsor: "Rep. Jane Smith",
+                status: "In Committee",
+                basic: {
+                    overview: "This bill aims to make healthcare more affordable for everyone. It will lower costs for families and improve access to doctors.",
+                    provisions: [
+                        "Caps prescription drug costs at $35/month",
+                        "Expands free preventative care services",
+                        "Provides subsidies to help lower-income families afford insurance"
+                    ]
+                },
+                intermediate: {
+                    overview: "The Healthcare Reform Act proposes significant changes to reduce out-of-pocket expenses for consumers while expanding coverage options. Key elements include price controls on essential medications and expanded subsidies for marketplace insurance plans.",
+                    provisions: [
+                        "Monthly cap of $35 on essential prescription medications",
+                        "Expansion of ACA subsidies to households earning up to 600% of the federal poverty level",
+                        "Requires insurers to cover preventative services without cost-sharing",
+                        "Creation of a public option for health insurance in underserved areas"
+                    ]
+                },
+                advanced: {
+                    overview: "H.R. 2378 introduces comprehensive reforms to the healthcare system focused on cost containment and expanded access. The bill amends Title XVIII of the Social Security Act to establish new pricing mechanisms for pharmaceuticals and expands eligibility criteria for premium tax credits under the Affordable Care Act.",
+                    provisions: [
+                        "Section 101: Establishes a maximum out-of-pocket limit of $2,000/year for prescription drugs under Medicare Part D",
+                        "Section 203: Modifies the premium tax credit calculation to increase subsidies for households at 200-600% FPL",
+                        "Section 305: Mandates coverage of USPSTF-recommended preventative services without cost-sharing",
+                        "Section 401: Authorizes the creation of a federally-administered public health insurance option",
+                        "Section 502: Implements reference pricing for 250 high-cost prescription drugs"
+                    ]
+                }
+            },
+            education: {
+                title: "Education Equality Act (S. 1845)",
+                date: "May 3, 2023",
+                sponsor: "Sen. Robert Chen",
+                status: "Passed Senate",
+                basic: {
+                    overview: "This bill aims to provide equal educational opportunities for all students regardless of their background or where they live.",
+                    provisions: [
+                        "Increases funding for schools in low-income areas",
+                        "Provides free school meals for all students",
+                        "Expands access to advanced courses in underserved schools"
+                    ]
+                },
+                // Other levels would be defined similarly
+            },
+            climate: {
+                title: "Climate Action Plan (H.R. 3021)",
+                date: "April 20, 2023",
+                sponsor: "Rep. Lisa Green",
+                status: "In Committee",
+                basic: {
+                    overview: "This comprehensive plan aims to reduce carbon emissions and promote renewable energy to combat climate change.",
+                    provisions: [
+                        "Invests in renewable energy infrastructure",
+                        "Provides tax credits for electric vehicles and solar panels",
+                        "Sets national carbon reduction targets"
+                    ]
+                }
+            },
+            infrastructure: {
+                title: "National Infrastructure Bill (S. 2100)",
+                date: "June 12, 2023",
+                sponsor: "Sen. Michael Brown",
+                status: "Signed into Law",
+                basic: {
+                    overview: "This landmark legislation provides funding to rebuild America's roads, bridges, and broadband infrastructure.",
+                    provisions: [
+                        "$1.2 trillion investment over 10 years",
+                        "Modernization of transportation systems",
+                        "Expansion of high-speed internet access in rural areas",
+                        "Upgrades to water systems and electrical grid"
+                    ]
+                }
+            }
+        };
+        
+        // Policy selector
+        document.getElementById('policy-select').addEventListener('change', function() {
+            const policyId = this.value;
+            const policy = policies[policyId];
+            
+            if (policy) {
+                document.getElementById('policy-title').textContent = policy.title;
+                document.getElementById('policy-date').textContent = policy.date;
+                document.getElementById('policy-sponsor').textContent = policy.sponsor;
+                document.getElementById('policy-status').textContent = policy.status;
+                
+                // Reset to basic level
+                document.querySelectorAll('.complexity-btn').forEach(b => b.classList.remove('active'));
+                document.querySelector('.complexity-btn[data-level="basic"]').classList.add('active');
+                
+                updatePolicyContent('basic');
+            }
+        });
+        
+        // Modal functionality
+        const openModal = (modalId) => {
+            document.getElementById(modalId).style.display = 'flex';
+        };
+        
+        const closeModal = (modalId) => {
+            document.getElementById(modalId).style.display = 'none';
+        };
+        
+        // Sign In Modal
+        document.getElementById('signin-btn').addEventListener('click', () => openModal('signin-modal'));
+        document.getElementById('close-signin').addEventListener('click', () => closeModal('signin-modal'));
+        document.getElementById('signin-submit').addEventListener('click', () => {
+            closeModal('signin-modal');
+            showNotification('Signed in successfully!');
+        });
+        
+        // Contact Modal
+        document.getElementById('contact-rep-btn').addEventListener('click', () => openModal('contact-modal'));
+        document.getElementById('close-contact').addEventListener('click', () => closeModal('contact-modal'));
+        document.getElementById('cancel-contact').addEventListener('click', () => closeModal('contact-modal'));
+        document.getElementById('send-contact').addEventListener('click', () => {
+            closeModal('contact-modal');
+            showNotification('Your message has been sent!');
+        });
+        
+        // Schedule Modal
+        document.getElementById('schedule-meeting-btn').addEventListener('click', () => openModal('schedule-modal'));
+        document.getElementById('close-schedule').addEventListener('click', () => closeModal('schedule-modal'));
+        document.getElementById('cancel-schedule').addEventListener('click', () => closeModal('schedule-modal'));
+        document.getElementById('submit-schedule').addEventListener('click', () => {
+            closeModal('schedule-modal');
+            showNotification('Meeting request submitted!');
+        });
+        
+        function openScheduleModal(rep) {
+            document.getElementById('meeting-rep').value = rep.id;
+            openModal('schedule-modal');
+        }
+        
+        // Message sending
+        document.getElementById('send-message-btn').addEventListener('click', () => {
+            const repSelect = document.getElementById('rep-select');
+            const subject = document.getElementById('message-subject').value;
+            const message = document.getElementById('message-content').value;
+            
+            if (!repSelect.value) {
+                showNotification('Please select a representative', 'error');
+                return;
+            }
+            
+            if (!subject.trim() || !message.trim()) {
+                showNotification('Please fill in both subject and message', 'error');
+                return;
+            }
+            
+            const rep = representatives.find(r => r.id === repSelect.value);
+            if (rep) {
+                showNotification(`Message sent to ${rep.name}!`);
+                // Clear form
+                document.getElementById('message-subject').value = '';
+                document.getElementById('message-content').value = '';
+            }
+        });
+        
+        // Other action buttons
+        document.getElementById('community-action-btn').addEventListener('click', () => {
+            showNotification('Community action center opened!');
+        });
+        
+        document.getElementById('voting-tools-btn').addEventListener('click', () => {
+            showNotification('Voting tools accessed!');
+        });
+        
+        document.getElementById('simulate-policy-btn').addEventListener('click', () => {
+            showNotification('Policy simulation started!');
+            // In a real implementation, this would open a simulation interface
+        });
+        
+        // Notification system
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            const text = document.getElementById('notification-text');
+            
+            text.textContent = message;
+            notification.style.display = 'flex';
+            
+            if (type === 'error') {
+                notification.style.background = 'var(--danger)';
+            } else {
+                notification.style.background = 'var(--success)';
+            }
+            
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            renderRepresentatives();
+            
+            // Setup chart
+            const ctx = document.getElementById('engagement-chart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
+                    datasets: [{
+                        label: 'Monthly Engagement',
+                        data: [120, 190, 150, 220, 300, 280, 350, 410, 390],
+                        backgroundColor: '#3b82f6',
+                        borderColor: '#2563eb',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'User Engagement Over Time',
+                            font: {
+                                size: 16
+                            }
+                        },
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Active Users'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Month'
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Search button functionality
+            document.getElementById('search-btn').addEventListener('click', () => {
+                const address = document.getElementById('address-input').value;
+                if (address.trim()) {
+                    showNotification(`Finding representatives for: ${address}`);
+                    // In a real app, this would call an API
+                } else {
+                    showNotification('Please enter an address', 'error');
+                }
+            });
+            
+            // Close modals when clicking outside
+            window.addEventListener('click', (e) => {
+                if (e.target.classList.contains('modal')) {
+                    e.target.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
